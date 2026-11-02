@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import AppHeader from '../components/AppHeader.jsx';
+import { publicLink } from '../utils.js';
 
 const withIds = (projects = []) => projects.map((p) => ({ ...p, key: crypto.randomUUID() }));
 
@@ -64,7 +65,7 @@ export default function Dashboard() {
     }
   };
 
-  const publicUrl = `${window.location.origin}/p/${portfolioId}`;
+  const publicUrl = publicLink(portfolioId);
 
   return (
     <>

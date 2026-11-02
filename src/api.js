@@ -1,10 +1,11 @@
-const TOKEN_KEY = 'pf_token';
+import { getToken, setToken } from './token.js';
+import { localApi } from './api-local.js';
+import { STATIC_DEMO } from './utils.js';
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY);
-export const setToken = (token) => {
-  if (token) localStorage.setItem(TOKEN_KEY, token);
-  else localStorage.removeItem(TOKEN_KEY);
-};
+export { getToken, setToken };
+
+// Optional: address of a deployed backend (leave empty to use the /api proxy)
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 async function request(path, { method = 'GET', body, auth = true } = {}) {
   const headers = { 'Content-Type': 'application/json' };
@@ -13,7 +14,7 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
 
   let res;
   try {
-    res = await fetch(`/api${path}`, {
+    res = await fetch(`${API_BASE}/api${path}`, {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
@@ -34,7 +35,7 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
   return data ?? {};
 }
 
-export const api = {
+const remoteApi = {
   // login module
   signup: (body) => request('/auth/signup', { method: 'POST', body, auth: false }),
   login: (body) => request('/auth/login', { method: 'POST', body, auth: false }),
@@ -51,3 +52,6 @@ export const api = {
   adminUsers: () => request('/admin/users'),
   adminDeleteUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
 };
+
+// GitHub Pages build has no server, so it uses the browser-only version
+export const api = STATIC_DEMO ? localApi : remoteApi;

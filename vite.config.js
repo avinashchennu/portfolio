@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 
 // Forward /api requests to the Express server during development
 export default defineConfig({
+  // GitHub Pages serves the site from /<repo-name>/ (set by the workflow)
+  base: process.env.VITE_BASE || '/',
   plugins: [react()],
   server: {
     proxy: {

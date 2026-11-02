@@ -8,3 +8,11 @@ export function safeUrl(value) {
     return '';
   }
 }
+
+// true in the GitHub Pages build (set by VITE_STATIC_DEMO=true)
+export const STATIC_DEMO = import.meta.env.VITE_STATIC_DEMO === 'true';
+
+export function publicLink(id) {
+  const { origin, pathname } = window.location;
+  return STATIC_DEMO ? `${origin}${pathname}#/p/${id}` : `${origin}/p/${id}`;
+}
